@@ -16,6 +16,9 @@ utsnow = int(datetime.datetime.now().timestamp())
 dt = datetime.datetime.now()
 dttma = dt - datetime.timedelta(days=90)
 utstma = int(dttma.timestamp())
+localpath = os.getcwd() + "/"
+
+
 
 # getdate = datetime.datetime.now()
 # threemonth = getdate - datetime.timedelta(months=3)
@@ -28,7 +31,8 @@ utstma = int(dttma.timestamp())
 urlFilename = "https://query1.finance.yahoo.com/v7/finance/download/BTC-USD?period1=" + str(utstma) + "&period2=" + str(utsnow) + "&interval=1d&events=history&includeAdjustedClose=true"
 print(urlFilename)
 e = ""
-pathTocsv = "/home/pi/pidev/skillshare_python/crypto_grabber/BTC-USD.csv"
+print(localpath)
+pathTocsv = localpath + "crypto_grabber_timesgate/BTC-USD.csv"
 
 hdr = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
       'Accept': 'text/html, application/xhtml+xml,application/xml;q=0.9,*/*q=0.8',
@@ -52,7 +56,9 @@ except(urllib.request.HTTPError, e):
     print("File did not donwload")
     
     
-localpath = "/home/pi/pidev/skillshare_python/crypto_grabber/"
+
+
+print(localpath)
 
 if os.path.exists(pathTocsv):
     print("Found the " + pathTocsv + " eixsts")
@@ -102,7 +108,7 @@ with open(openFile,'r') as csvfile:
         oneResultrow = [date, openprice, highprice, lowprice, closeprice, pctChange,float(volume)]
         listoflists.append(oneResultrow)
 
-        print(date, " Open: " + " {:,.1f}".format(float(openprice)) + " Close: " + " {:,.1f}".format(float(closeprice)) + " {:,.1f}".format(float(volume)/1e6) + "M ", " {:,.1f}".format(pctChange*100)+"%")
+        #print(date, " Open: " + " {:,.1f}".format(float(openprice)) + " Close: " + " {:,.1f}".format(float(closeprice)) + " {:,.1f}".format(float(volume)/1e6) + "M ", " {:,.1f}".format(pctChange*100)+"%")
         
 #print(str(len(listoflists)))
 
@@ -110,32 +116,52 @@ listoflistsSortedbyDate = sorted(listoflists, key=lambda x:x[0], reverse=True)
 
 #print(listoflistsSortedbyDate)
 
-
-# for row in listoflistsSortedbyDate:
-#         date = row[0]
-#         openprice = row[1]
-#         highprice = row[2]
-#         lowprice = row[3]
-#         closeprice = row[4]
-#         volume = row[6]
-#         pctChange = float(closeprice)/float(openprice) - 1
-#         oneResultrow = [date, openprice, highprice, lowprice, closeprice, pctChange,float(volume)]
-#         listoflists.append(oneResultrow)
-
-#         print(date, " Open: " + " {:,.1f}".format(float(openprice)) + " Close: " + " {:,.1f}".format(float(closeprice)) + " {:,.1f}".format(float(volume)/1e6) + "M ", " {:,.1f}".format(pctChange*100)+"%")
+#print(listoflistsSortedbyDate)
 
 
-excelFile = localpath + "btcusd.xlsx"
+for row in listoflistsSortedbyDate:
+        date = row[0]
+        openprice = row[1]
+        highprice = row[2]
+        lowprice = row[3]
+        closeprice = row[4]
+        volume = row[6]
+        pctChange = float(closeprice)/float(openprice) - 1
+        oneResultrow = [date, openprice, highprice, lowprice, closeprice, pctChange,float(volume)]
+        listoflists.append(oneResultrow)
 
-workbook = xlsxwriter.Workbook(excelFile)
+        print(date, " Open: " + " {:,.1f}".format(float(openprice)) + " Close: " + " {:,.1f}".format(float(closeprice)) + " {:,.1f}".format(float(volume)/1e6) + "M ", " {:,.1f}".format(pctChange*100)+"%")
 
-worksheet = workbook.add_worksheet("Summary")
+print(len(listoflistsSortedbyDate))
 
-worksheet.write_row("A1",["BTC Three month historical prices"])
-worksheet.write_row("A2",["Date","Open","High","Low","Close","Percent","Volume"])
 
-rowcount = len(listoflistsSortedbyDate)
-for rowNum in range(rowcount):
-    oneRowToWrite = listoflistsSortedbyDate[rowNum]
-    worksheet.write_row("A" + str(rowNum + 3), oneRowToWrite)
-workbook.close()
+
+curdate = listoflistsSortedbyDate[0][0]
+curopen = listoflistsSortedbyDate[0][1]
+curhigh = listoflistsSortedbyDate[0][2]
+curlow = listoflistsSortedbyDate[0][3]
+curclose = listoflistsSortedbyDate[0][4]
+curper = listoflistsSortedbyDate[0][5]
+curvol = listoflistsSortedbyDate[0][6]
+
+print(curdate, "Price:" + " {:,.1f}".format(float(curclose)) +  " High: " + " {:,.1f}".format(float(curhigh)) +  " Volume {:,.1f}".format(float(curvol)/1e6) + "M ", " Change: {:,.1f}".format(curper*100)+"%"  )
+print(localpath)
+# excelFile = localpath + "btcusd.xlsx"
+
+# workbook = xlsxwriter.Workbook(excelFile)
+
+# worksheet = workbook.add_worksheet("Summary")
+
+# worksheet.write_row("A1",["BTC Three month historical prices"])
+# worksheet.write_row("A2",["Date","Open","High","Low","Close","Percent","Volume"])
+
+# rowcount = len(listoflistsSortedbyDate)
+# for rowNum in range(rowcount):
+#     oneRowToWrite = listoflistsSortedbyDate[rowNum]
+#     worksheet.write_row("A" + str(rowNum + 3), oneRowToWrite)
+# workbook.close()
+
+
+#lenofList = int(len(listoflists)/2)
+
+
