@@ -2,6 +2,10 @@
 	"folders": [
 		{
 			"path": "/home/pi/pidev"
+		},
+		{
+			"name": "cyberterm",
+			"path": "../cyberterm"
 		}
 	],
 	"settings": {}
